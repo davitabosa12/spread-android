@@ -3,6 +3,7 @@ package smd.ufc.br.spread;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -120,6 +121,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -289,6 +291,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @Override
+    public void onBackPressed() {
+        Intent data = new Intent();
+        data.putExtra("login",false);
+        setResult(RESULT_CANCELED, data);
+        finish();
+    }
+
+    @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
@@ -312,6 +322,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
+
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -368,6 +379,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     util.setLogin(mLogin);
                     util.setPassword(mPassword);
                     util.setName(name);
+                    util.setMatricula(matricula);
 
 
                     Constraints constraints = new Constraints.Builder()
@@ -377,6 +389,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             .setConstraints(constraints)
                             .build();
                     WorkManager.getInstance().enqueue(workRequest);
+
                     return true;
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -409,6 +422,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                Intent data = new Intent();
+                data.putExtra("login",true);
+                setResult(RESULT_OK, data);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

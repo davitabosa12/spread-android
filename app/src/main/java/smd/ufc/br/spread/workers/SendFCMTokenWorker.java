@@ -8,7 +8,9 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.RequestFuture;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +30,9 @@ public class SendFCMTokenWorker extends Worker {
         Log.d(TAG, "doWork: Started Working");
         Context context = getApplicationContext();
         String auth_token = new TokenUtil(context).getAuthToken();
-        String fcm_token = FirebaseInstanceId.getInstance().getToken();
-        String url = context.getResources().getString(R.string.server_url) + "/users/tokenUpdate";
+        String fcm_token = new TokenUtil(context).getFCMToken();
+        String matricula = new TokenUtil(context).getMatricula();
+        String url = context.getResources().getString(R.string.server_url) + "/api/aluno/"+ matricula + "/tokenUpdate";
         JSONObject response = null;
         JSONObject params = new JSONObject();
         try{

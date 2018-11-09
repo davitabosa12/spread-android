@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import smd.ufc.br.spread.utils.TokenUtil;
@@ -21,6 +22,8 @@ import smd.ufc.br.spread.utils.TokenUtil;
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     Button btnLab, btnNoticia, btnRequisicao, btnLogin;
+    NavigationView navigationView;
+    private static final int LOGIN_REQUEST_CODE = 401;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,8 @@ public class Main2Activity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         pickButtons();
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         if(userHasLogin()){
             changeUILogin();
@@ -54,8 +59,7 @@ public class Main2Activity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     private void pickButtons() {
@@ -67,7 +71,7 @@ public class Main2Activity extends AppCompatActivity
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), LOGIN_REQUEST_CODE);
             }
         });
         btnRequisicao.setOnClickListener(new View.OnClickListener() {
@@ -93,11 +97,28 @@ public class Main2Activity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == LOGIN_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                changeUILogin();
+            }
+        }
+    }
+
     private void changeUILogin() {
         btnLab.setVisibility(View.VISIBLE);
         btnNoticia.setVisibility(View.VISIBLE);
         btnRequisicao.setVisibility(View.VISIBLE);
         btnLogin.setVisibility(View.GONE);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView userName = headerView.findViewById(R.id.user_name);
+        TextView userEmail = headerView.findViewById(R.id.user_email);
+        TokenUtil tokenUtil = new TokenUtil(getApplicationContext());
+
+        userName.setText(tokenUtil.getName());
+        userEmail.setText(tokenUtil.getLogin());
     }
 
     private boolean userHasLogin(){
