@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "23.0.1"
+
 
     defaultConfig {
         applicationId "smd.ufc.br.spread"
@@ -35,7 +35,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.volley:volley:1.1.0'
     def work_version = "1.0.0-alpha09"
-
+    //JWT
+    api 'io.jsonwebtoken:jjwt-api:0.10.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.5'
+    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.10.5') {
+        exclude group: 'org.json', module: 'json' //provided by Android natively
+    } // JWT
     implementation "android.arch.work:work-runtime:$work_version"
     implementation 'com.android.support:design:27.0.0'
     implementation 'com.android.support:appcompat-v7:27.0.0'

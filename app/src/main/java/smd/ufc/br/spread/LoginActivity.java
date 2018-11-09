@@ -32,14 +32,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.TimeoutError;
+import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.RequestFuture;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -48,6 +51,9 @@ import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import smd.ufc.br.spread.net.NetworkConnect;
 import smd.ufc.br.spread.utils.TokenUtil;
 import smd.ufc.br.spread.workers.SendFCMTokenWorker;
@@ -326,11 +332,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            String url = getResources().getString(R.string.server_url) + "/api/login/aluno/";
+            String url = getResources().getString(R.string.server_url) + "/api/login/aluno";
             JSONObject loginParams = new JSONObject();
             try {
                 loginParams.put("login", mLogin);
-                loginParams.put("password", mPassword);
+                loginParams.put("senha", mPassword);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -342,12 +348,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 //salvar token no sharedPref
                 TokenUtil util = new TokenUtil(getApplicationContext());
                 try{
-                    String name = response.getString("name");
-                    util.setAuthToken(response.getString("token"));
+                    Iterator<String> i = response.keys();
+                    while(i.hasNext()){
+                        String key = i.next();
+                        Log.d(TAG, "doInBackground: " + key + ":" + response.getString(key));
+                    }
+                    String token = response.getString("token");
+                    //String login = response.getString("login");
+                    String name = response.getString("nome");
+                    String matricula = response.getString("matricula");
+                    String email = response.getString("email");
+                    String userType = response.getString("userType");
+
+                    Log.d(TAG, "doInBackground received: " + " " + name + " "
+                     + matricula + " " + email + " " + userType);
+
+
+                    util.setAuthToken(token);
                     util.setLogin(mLogin);
                     util.setPassword(mPassword);
                     util.setName(name);
-                    Toast.makeText(LoginActivity.this, "Olá, " + name, Toast.LENGTH_SHORT).show();
+
+
                     Constraints constraints = new Constraints.Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED)
                             .build();
@@ -370,11 +392,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if(error instanceof AuthFailureError){
                     //erro de autenticacao
                     Log.d(TAG, "onResponse: Senha incorreta");
-                    Toast.makeText(LoginActivity.this, "Senha incorreta", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LoginActivity.this, "Senha incorreta", Toast.LENGTH_SHORT).show();
                 } else if(error instanceof TimeoutError){
                     //erro de rede
                     Log.d(TAG, "onResponse: Não foi possível se conectar ao servidor.");
-                    Toast.makeText(LoginActivity.this, "Não foi possível se conectar ao servidor.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LoginActivity.this, "Não foi possível se conectar ao servidor.", Toast.LENGTH_SHORT).show();
                 }
                 Log.e(TAG, "onErrorResponse: ", error);
                 return false;

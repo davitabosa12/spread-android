@@ -3,10 +3,12 @@ package smd.ufc.br.spread.net;
 import android.content.Context;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class NetworkConnect {
@@ -39,6 +41,7 @@ public class NetworkConnect {
      */
     public RequestFuture<JSONObject> connect(){
         request = new JsonObjectRequest(method, url, params, future, future);
+        request.setShouldCache(false);
         queue.add(request);
         return future;
     }

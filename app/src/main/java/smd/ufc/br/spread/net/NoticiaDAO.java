@@ -1,6 +1,7 @@
 package smd.ufc.br.spread.net;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import smd.ufc.br.spread.R;
 import smd.ufc.br.spread.model.Noticia;
@@ -39,6 +42,7 @@ public class NoticiaDAO {
      *
      */
     public List<Noticia> getNoticias(){
+
         List<Noticia> resp = new ArrayList<>();
         JSONObject fromServer = null;
         NetworkConnect connect = new NetworkConnect(context, Request.Method.GET, url, null);

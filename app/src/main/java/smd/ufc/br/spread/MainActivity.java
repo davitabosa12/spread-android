@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if(userHasLogin()){
-
+            startActivity(new Intent(this, Main2Activity.class)); //go to login
         } else {
             startActivity(new Intent(this, Main2Activity.class)); //go to login
         }
