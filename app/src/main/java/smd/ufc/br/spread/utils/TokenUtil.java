@@ -15,6 +15,12 @@ public class TokenUtil {
     public TokenUtil(Context context){
         this.context = context;
     }
+    public String getFCMToken(){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        String token = sharedPref.getString("fcmToken", null);
+        return token;
+    }
+
     public String getAuthToken(){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         String token = sharedPref.getString("authToken", null);
@@ -38,6 +44,24 @@ public class TokenUtil {
         return token;
     }
 
+    public String getMatricula(){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        String token = sharedPref.getString("matricula", null);
+        return token;
+    }
+
+    public void setMatricula(String matricula){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("matricula", matricula);
+        editor.apply();
+    }
+    public void setFCMToken(String fcmToken){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("fcmToken", fcmToken);
+        editor.apply();
+    }
     public void setAuthToken(String authToken){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

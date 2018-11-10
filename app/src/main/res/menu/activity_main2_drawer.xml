@@ -6,20 +6,30 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:icon="@drawable/ic_vector"
+            android:title="Notificações" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:icon="@drawable/ic_round_edit_24px"
+            android:title="Alterações no Cadastro" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:icon="@drawable/ic_round_unarchive_24px"
+            android:title="Requisições" />
         <item
             android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:icon="@drawable/ic_round_gps_fixed_24px"
+            android:title="Check-in Professor" />
+        <item
+            android:id="@+id/nav_laboratorio"
+            android:icon="@drawable/ic_round_ballot_24px"
+            android:title="Aulas, Salas e Laboratórios"
+            />
+        <item
+            android:id="@+id/nav_noticias"
+            android:icon="@drawable/ic_round_art_track_24px"
+            android:title="Notícias"
+            />
     </group>
 
     <item android:title="Communicate">
