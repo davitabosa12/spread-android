@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 import smd.ufc.br.spread.model.Noticia;
 import smd.ufc.br.spread.net.NetworkConnect;
 import smd.ufc.br.spread.net.NoticiaDAO;
+import smd.ufc.br.spread.views.NoticiaView;
 
 public class NoticiaActivity extends AppCompatActivity {
     List<Noticia> noticias;
@@ -31,7 +34,30 @@ public class NoticiaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noticia);
-        mTask = new NoticiaGetterTask();
+        final LinearLayout rootView = findViewById(R.id.linearScroll);
+
+        mTask = new NoticiaGetterTask(new JSONArrayListener() {
+            @Override
+            public void doThis(JSONArray response) {
+                //inflate views
+                for(int i = 0; i < response.length(); i++){
+                    try {
+                        JSONObject noticia = response.getJSONObject(i);
+                        NoticiaView nv = new NoticiaView(rootView.getContext());
+                        nv.setTitulo(noticia.getString("titulo"));
+                        nv.setCorpo(noticia.getString("corpo"));
+                        nv.setTopico(noticia.getString("topico"));
+                        nv.setData(noticia.getString("timestamp"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+
+            }
+        });
         mTask.execute((Void) null);
 
 
@@ -40,8 +66,13 @@ public class NoticiaActivity extends AppCompatActivity {
 
     }
     public class NoticiaGetterTask extends AsyncTask<Void, Void, JSONObject>{
+        JSONArrayListener callback;
         public NoticiaGetterTask(){
 
+        }
+
+        public NoticiaGetterTask(JSONArrayListener callback){
+            this.callback = callback;
         }
 
         @Override
@@ -71,6 +102,7 @@ public class NoticiaActivity extends AppCompatActivity {
                 JSONArray array = null;
                 try {
                     array = response.getJSONArray("noticias");
+                    callback.doThis(array);
                     for(int i = 0; i < array.length(); i++){
                         JSONObject noticia = array.getJSONObject(i);
 
@@ -83,8 +115,6 @@ public class NoticiaActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
-
         }
     }
 }

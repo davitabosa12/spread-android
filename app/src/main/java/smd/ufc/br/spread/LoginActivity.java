@@ -68,8 +68,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Id to identity READ_CONTACTS permission request.
      */
+
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final String TAG = "LoginActivity";
+    protected static final int LOGIN_SENHA_INCORRETA = -1;
+    protected static final int LOGIN_SEM_INTERNET = -2;
+    protected static final int LOGIN_USUARIO_NAO_EXISTE = -3;
+    protected static final int LOGIN_OK = 0;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -317,7 +322,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
         //private final String mEmail;
         private final String mLogin;
@@ -330,7 +335,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Integer doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             String url = getResources().getString(R.string.server_url) + "/api/login/aluno";
             JSONObject loginParams = new JSONObject();
@@ -377,14 +382,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             .setConstraints(constraints)
                             .build();
                     WorkManager.getInstance().enqueue(workRequest);
-                    return true;
+                    return LOGIN_OK;
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    return false;
+                    return LOGIN_SEM_INTERNET;
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                return false;
+                return LOGIN_SEM_INTERNET;
             } catch (ExecutionException e) {
 
                 Throwable error = e.getCause();
@@ -393,26 +398,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     //erro de autenticacao
                     Log.d(TAG, "onResponse: Senha incorreta");
                     //Toast.makeText(LoginActivity.this, "Senha incorreta", Toast.LENGTH_SHORT).show();
+                    return LOGIN_SENHA_INCORRETA;
                 } else if(error instanceof TimeoutError){
                     //erro de rede
                     Log.d(TAG, "onResponse: Não foi possível se conectar ao servidor.");
+                    return LOGIN_SEM_INTERNET;
                     //Toast.makeText(LoginActivity.this, "Não foi possível se conectar ao servidor.", Toast.LENGTH_SHORT).show();
                 }
                 Log.e(TAG, "onErrorResponse: ", error);
-                return false;
+                return LOGIN_SEM_INTERNET;
             }
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Integer result) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
+            if (!(result < 0)) {
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                switch (result){
+                    case LOGIN_SENHA_INCORRETA:
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
+                        break;
+                    case LOGIN_SEM_INTERNET:
+                        mPasswordView.setError(getString(R.string.error_sem_internet));
+                        mPasswordView.requestFocus();
+                        break;
+                    case LOGIN_USUARIO_NAO_EXISTE:
+                        mPasswordView.setError(getString(R.string.error_nao_existe));
+                        mPasswordView.requestFocus();
+                        break;
+                }
+
             }
         }
 

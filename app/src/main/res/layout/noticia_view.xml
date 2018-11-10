@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/txv_topico"
+            android:layout_width="wrap_content"
+            android:layout_height="19dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:text="%topico%"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txv_titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="19dp"
+            android:layout_marginTop="2dp"
+            android:text="%TITULO%"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/txv_topico"
+            app:layout_constraintTop_toBottomOf="@+id/txv_topico" />
+
+        <TextView
+            android:id="@+id/txv_corpo_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="%corpo%"
+            app:layout_constraintStart_toStartOf="@+id/txv_titulo"
+            app:layout_constraintTop_toBottomOf="@+id/txv_titulo" />
+
+        <TextView
+            android:id="@+id/txv_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="%data%"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/txv_topico"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txv_topico" />
+    </android.support.constraint.ConstraintLayout>
+</merge>
