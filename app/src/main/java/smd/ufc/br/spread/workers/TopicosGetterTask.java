@@ -9,17 +9,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import smd.ufc.br.spread.JSONArrayListener;
 import smd.ufc.br.spread.R;
+import smd.ufc.br.spread.ResponseListener;
+import smd.ufc.br.spread.model.Topico;
 import smd.ufc.br.spread.net.NetworkConnect;
 
 public class TopicosGetterTask extends AsyncTask<Void, Void, JSONArray> {
 
     Context ctx;
-    JSONArrayListener callback;
-    public TopicosGetterTask(Context context, JSONArrayListener callback){
+    ResponseListener<List<Topico>> callback;
+    public TopicosGetterTask(Context context, ResponseListener<List<Topico>> callback){
         this.ctx = context;
         this.callback = callback;
     }
@@ -43,6 +45,11 @@ public class TopicosGetterTask extends AsyncTask<Void, Void, JSONArray> {
     @Override
     protected void onPostExecute(JSONArray jsonArray) {
         super.onPostExecute(jsonArray);
-        callback.doThis(jsonArray);
+
+        try {
+            callback.doThis(Topico.fromJSONArray(jsonArray));
+        } catch (JSONException e) {
+            callback.doThis(null);
+        }
     }
 }

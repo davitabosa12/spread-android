@@ -14,6 +14,7 @@ import org.json.JSONObject;
 public class NetworkConnect {
     private RequestQueue queue;
     private JsonObjectRequest request;
+    private CacheRequest cacheRequest;
     private String url;
     private JSONObject params;
     private int method;
@@ -43,6 +44,13 @@ public class NetworkConnect {
         request = new JsonObjectRequest(method, url, params, future, future);
         request.setShouldCache(false);
         queue.add(request);
+        return future;
+    }
+
+    public RequestFuture<JSONObject> connectCached(){
+        cacheRequest = new CacheRequest(method, url, params, future, future);
+        cacheRequest.setShouldCache(true);
+        queue.add(cacheRequest);
         return future;
     }
 

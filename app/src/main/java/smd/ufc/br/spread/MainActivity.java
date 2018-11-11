@@ -30,15 +30,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import smd.ufc.br.spread.fragments.AlteracoesFragment;
+import smd.ufc.br.spread.fragments.CheckInProfFragment;
+import smd.ufc.br.spread.fragments.LaboratorioFragment;
+import smd.ufc.br.spread.fragments.NoticiasFragment;
+import smd.ufc.br.spread.fragments.NotificacoesFragment;
+import smd.ufc.br.spread.fragments.RequisicoesFragment;
+import smd.ufc.br.spread.model.Topico;
 import smd.ufc.br.spread.utils.TokenUtil;
 import smd.ufc.br.spread.utils.TopicoPreferences;
 import smd.ufc.br.spread.workers.TopicosGetterTask;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ResponseListener<List<Topico>> {
     private static final String TAG = "MainActivity";
     Button btnLab, btnNoticia, btnRequisicao, btnLogin;
     NavigationView navigationView;
@@ -50,17 +59,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        pickButtons();
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if(userHasLogin()){
             changeUILogin();
         } else {
-            btnLab.setVisibility(View.GONE);
-            btnNoticia.setVisibility(View.GONE);
-            btnRequisicao.setVisibility(View.GONE);
-            btnLogin.setVisibility(View.VISIBLE);
+
         }
         dataSync(); //todo: colocar em userHasLogin();
 
@@ -78,44 +84,13 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-
-    }
-
-    private void pickButtons() {
-        btnLogin = findViewById(R.id.btn_login);
-        btnRequisicao = findViewById(R.id.btn_requisicao);
-        btnNoticia = findViewById(R.id.btn_noticias);
-        btnLab= findViewById(R.id.btn_laboratorio);
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), LOGIN_REQUEST_CODE);
-            }
-        });
-        btnRequisicao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //startActivity(new Intent(getApplicationContext(), RequisicaoActivity.class));
-                Toast.makeText(MainActivity.this, "Requisição!", Toast.LENGTH_SHORT).show();
-            }
-        });
-        btnNoticia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), NoticiaActivity.class));
-            }
-        });
-        btnLab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //startActivity(new Intent(getApplicationContext(), LabActivity.class));
-                Toast.makeText(MainActivity.this, "Laboratorio!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new NoticiasFragment())
+                .commit();
+        navigationView.setCheckedItem(R.id.nav_noticias);
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -127,10 +102,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void changeUILogin() {
-        btnLab.setVisibility(View.VISIBLE);
-        btnNoticia.setVisibility(View.VISIBLE);
-        btnRequisicao.setVisibility(View.VISIBLE);
-        btnLogin.setVisibility(View.GONE);
 
         View headerView = navigationView.getHeaderView(0);
         TextView userName = headerView.findViewById(R.id.user_name);
@@ -156,7 +127,8 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-private void dataSync(){
+
+    private void dataSync(){
     Log.d(TAG, "dataSync: Init datasync");
     FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
         @Override
@@ -167,32 +139,10 @@ private void dataSync(){
         }
     });
 
-    TopicosGetterTask task = new TopicosGetterTask(this, new JSONArrayListener() {
-        @Override
-        public void doThis(JSONArray response) {
-            HashSet<String> topicos = new HashSet<>();
-            JSONObject obj;
-            for(int i = 0; i < response.length(); ++i){
-                try {
-                    obj = response.getJSONObject(i);
-                    topicos.add(obj.getString("nome"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
+    TopicosGetterTask task = new TopicosGetterTask(this,this);
             TopicoPreferences prefs = new TopicoPreferences(getApplicationContext());
-            if(!topicos.isEmpty())
-                prefs.setTopicosDisponiveis(topicos);
-        }
-    });
-    task.execute();
 
-    if(userHasLogin()){
-        startActivity(new Intent(this, MainActivity.class)); //go to login
-    } else {
-        startActivity(new Intent(this, MainActivity.class)); //go to login
-    }
+    task.execute();
     ouvirTopicos();
 }
 
@@ -203,8 +153,8 @@ private void dataSync(){
         if(disp == null){
             return;
         }
-        if(interesse != null){
-            disp.removeAll(interesse);
+        if(interesse != null || true){
+            //disp.removeAll(interesse);
             for(final String topico : disp) //TODO: MUDAR PARA OS INTERESSES DO USUARIO
                 FirebaseMessaging.getInstance().subscribeToTopic(topico).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -257,21 +207,53 @@ private void dataSync(){
 
         switch(id){
             case R.id.nav_notificacoes:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new NotificacoesFragment())
+                        .commit();
                 break;
             case R.id.nav_alteracoes:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new AlteracoesFragment())
+                        .commit();
                 break;
             case R.id.nav_requisicoes:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new RequisicoesFragment())
+                        .commit();
                 break;
             case R.id.nav_check_in_professor:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new CheckInProfFragment())
+                        .commit();
                 break;
             case R.id.nav_laboratorio:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new LaboratorioFragment())
+                        .commit();
                 break;
             case R.id.nav_noticias:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new NoticiasFragment())
+                        .commit();
                 break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void doThis(List<Topico> response) {
+        TopicoPreferences prefs = new TopicoPreferences(this);
+        if(!response.isEmpty()){
+            HashSet<String> set;
+            set = new HashSet<String>();
+            for(Topico t : response){
+                set.add(t.getNome());
+            }
+            prefs.setTopicosDisponiveis(set);
+        }
+
     }
 }
