@@ -21,9 +21,17 @@ public class Laboratorio {
         this.descricao = "";
     }
 
-    public Laboratorio(JSONObject data) throws JSONException {
-        this.nome = data.getString("nome");
-        this.descricao = data.getString("descricao");
+    public Laboratorio(JSONObject data) {
+        try {
+            this.nome = data.getString("nome");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            this.descricao = data.getString("descricao");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getNome() {
