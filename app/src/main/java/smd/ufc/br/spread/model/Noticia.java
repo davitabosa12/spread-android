@@ -1,10 +1,13 @@
 package smd.ufc.br.spread.model;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Noticia {
     private String titulo;
@@ -26,6 +29,16 @@ public class Noticia {
         this.corpo = jsonObject.getString("corpo");
         this.topico = jsonObject.getString("topico");
         this.timestamp = jsonObject.getString("timestamp");
+    }
+
+    static List<Noticia> fromJSONArray (JSONArray data) throws JSONException {
+        List<Noticia> resposta = new ArrayList<>();
+        if(data == null)
+            return resposta;
+        for (int i = 0; i < data.length(); i++) {
+            resposta.add(new Noticia(data.getJSONObject(i)));
+        }
+        return resposta;
     }
 
     public String getTitulo() {
