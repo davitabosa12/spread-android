@@ -10,7 +10,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.RequestFuture;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +31,7 @@ public class SendFCMTokenWorker extends Worker {
         Context context = getApplicationContext();
         String auth_token = new TokenUtil(context).getAuthToken();
         String fcm_token = new TokenUtil(context).getFCMToken();
+        Log.d(TAG, "doWork: fcm_token is " + fcm_token);
         String matricula = new TokenUtil(context).getMatricula();
         String url = context.getResources().getString(R.string.server_url) + "/api/aluno/"+ matricula + "/tokenUpdate";
         JSONObject response = null;
@@ -62,8 +63,10 @@ public class SendFCMTokenWorker extends Worker {
                 Log.e(TAG, "doWork: Servidor offline ou URL errada", e);
                 return Result.RETRY;
             }
+            return Result.RETRY;
         }
         Log.d(TAG, "doWork: Success!");
+        Log.d(TAG, "doWork: response -->>" + response.toString());
         return Result.SUCCESS;
 
 

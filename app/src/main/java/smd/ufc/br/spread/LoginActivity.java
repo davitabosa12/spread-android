@@ -37,11 +37,14 @@ import com.android.volley.Request;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.RequestFuture;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -56,6 +59,8 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import smd.ufc.br.spread.net.NetworkConnect;
 import smd.ufc.br.spread.utils.TokenUtil;
+import smd.ufc.br.spread.utils.TopicRefresher;
+import smd.ufc.br.spread.utils.TopicoPreferences;
 import smd.ufc.br.spread.workers.SendFCMTokenWorker;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -307,6 +312,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -352,6 +362,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 JSONObject response = future.get();
                 //salvar token no sharedPref
                 TokenUtil util = new TokenUtil(getApplicationContext());
+                TopicoPreferences prefs = new TopicoPreferences(getApplicationContext());
                 try{
                     Iterator<String> i = response.keys();
                     while(i.hasNext()){
@@ -364,14 +375,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     String matricula = response.getString("matricula");
                     String email = response.getString("email");
                     String userType = response.getString("userType");
+                    JSONArray topicosInscritos = response.getJSONArray("topicosInscritos");
+                    HashSet<String> topicos = new HashSet<>();
+                    for(int j = 0; j < topicosInscritos.length(); j++ ){
+                        topicos.add(topicosInscritos.getString(j));
+                    }
+                    prefs.setTopicoInteresse(topicos);
 
                     Log.d(TAG, "doInBackground received: " + " " + name + " "
-                     + matricula + " " + email + " " + userType);
-
+                     + matricula + " " + email + " " + userType + " " + topicosInscritos.toString());
+                    new TopicRefresher(getApplicationContext()).refresh();
 
                     util.setAuthToken(token);
                     util.setLogin(mLogin);
                     util.setPassword(mPassword);
+                    util.setMatricula(matricula);
                     util.setName(name);
 
 
@@ -416,6 +434,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (!(result < 0)) {
+                setResult(RESULT_OK);
                 finish();
             } else {
                 switch (result){

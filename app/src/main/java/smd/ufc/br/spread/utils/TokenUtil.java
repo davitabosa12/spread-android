@@ -2,6 +2,13 @@ package smd.ufc.br.spread.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import smd.ufc.br.spread.workers.SendFCMTokenWorker;
 
 /**
  * Classe TokenUtil
@@ -9,17 +16,14 @@ import android.content.SharedPreferences;
  */
 public class TokenUtil {
     private Context context;
+    public static final String TAG = "TokenUtil";
     public static String PREF_FILE_NAME = "smd.ufc.br.spread";
 
 
     public TokenUtil(Context context){
         this.context = context;
     }
-    public String getFCMToken(){
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
-        String token = sharedPref.getString("fcmToken", null);
-        return token;
-    }
+
 
     public String getAuthToken(){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
@@ -49,6 +53,11 @@ public class TokenUtil {
         String token = sharedPref.getString("matricula", null);
         return token;
     }
+    public String getFCMToken(){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        String token = sharedPref.getString("fcmToken", null);
+        return token;
+    }
 
     public void setMatricula(String matricula){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
@@ -60,8 +69,21 @@ public class TokenUtil {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("fcmToken", fcmToken);
+        //startTokenWorker();
         editor.apply();
     }
+
+    private void startTokenWorker() {
+        Log.d(TAG, "startTokenWorker: starting token worker...");
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(SendFCMTokenWorker.class)
+                .setConstraints(constraints)
+                .build();
+        WorkManager.getInstance().enqueue(workRequest);
+    }
+
     public void setAuthToken(String authToken){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

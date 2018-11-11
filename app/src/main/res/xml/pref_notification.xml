@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="switch_preference_1"
+        android:summary="Notificações inteligentes enviam avisos para você, dependendo da hora e do local"
+        android:title="Ativar notificações inteligentes" />
+</PreferenceScreen>

@@ -48,6 +48,7 @@ public class NoticiaActivity extends AppCompatActivity {
                         nv.setCorpo(noticia.getString("corpo"));
                         nv.setTopico(noticia.getString("topico"));
                         nv.setData(noticia.getString("timestamp"));
+                        rootView.addView(nv);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

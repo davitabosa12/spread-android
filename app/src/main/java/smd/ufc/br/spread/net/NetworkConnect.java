@@ -46,7 +46,4 @@ public class NetworkConnect {
         return future;
     }
 
-    public RequestFuture<JSONObject> getFuture() {
-        return future;
-    }
 }

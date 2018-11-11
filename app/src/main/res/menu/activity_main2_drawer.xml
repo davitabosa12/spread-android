@@ -5,20 +5,20 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_vector"
+            android:id="@+id/nav_notificacoes"
+            android:icon="@drawable/ic_notificacoes_pink"
             android:title="Notificações" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_round_edit_24px"
+            android:id="@+id/nav_alteracoes"
+            android:icon="@drawable/ic_altera_cadastro_pink"
             android:title="Alterações no Cadastro" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_round_unarchive_24px"
+            android:id="@+id/nav_requisicoes"
+            android:icon="@drawable/ic_requisicoes_pink"
             android:title="Requisições" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_round_gps_fixed_24px"
+            android:id="@+id/nav_check_in_professor"
+            android:icon="@drawable/ic_check_in_pink"
             android:title="Check-in Professor" />
         <item
             android:id="@+id/nav_laboratorio"
@@ -27,7 +27,7 @@
             />
         <item
             android:id="@+id/nav_noticias"
-            android:icon="@drawable/ic_round_art_track_24px"
+            android:icon="@drawable/ic_noticias_pink"
             android:title="Notícias"
             />
     </group>

@@ -3,6 +3,7 @@ package smd.ufc.br.spread.views;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
@@ -15,7 +16,27 @@ import org.joda.time.Period;
 import smd.ufc.br.spread.R;
 
 public class NoticiaView extends ConstraintLayout {
+    private final String TAG = "NoticiaView";
     private TextView txvTopico, txvTitulo, txvCorpo, txvData;
+    private String topico, titulo, corpo, data;
+    boolean inflated = false;
+
+    public String getTopico() {
+        return topico;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getCorpo() {
+        return corpo;
+    }
+
+    public String getData() {
+        return data;
+    }
+
     public NoticiaView(Context context) {
         super(context);
         init(context);
@@ -36,7 +57,10 @@ public class NoticiaView extends ConstraintLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.noticia_view, this);
         JodaTimeAndroid.init(context);
+        onFinishInflate();
     }
+
+
 
     @Override
     protected void onFinishInflate() {
@@ -47,13 +71,31 @@ public class NoticiaView extends ConstraintLayout {
         txvTitulo = findViewById(R.id.txv_titulo);
         txvCorpo = findViewById(R.id.txv_corpo_preview);
         txvData = findViewById(R.id.txv_data);
+
+
+
+        //setar valores
+        txvTopico.setText(topico);
+        txvTitulo.setText(titulo);
+        txvCorpo.setText(corpo);
+        txvData.setText(data);
+
+        inflated = true;
+        Log.d(TAG, "onFinishInflate: inflado com " + txvTopico.getText() + ", " +
+                txvTitulo.getText() + ", " + txvCorpo.getText() + ", " + txvData.getText());
+
     }
 
+
     public void setTopico(String topico){
-        txvTopico.setText(topico);
+        if(inflated)
+            txvTopico.setText(topico);
+        this.topico = topico;
     }
     public void setTitulo(String titulo){
-        txvTitulo.setText(titulo);
+        if(inflated)
+            txvTitulo.setText(titulo);
+        this.titulo = titulo;
     }
     public void setCorpo(String corpo){
         String limit = corpo;
@@ -63,25 +105,38 @@ public class NoticiaView extends ConstraintLayout {
             limit += "...";
         }
 
-        txvCorpo.setText(limit);
+        if(inflated)
+            txvCorpo.setText(limit);
+        this.corpo = limit;
     }
     public void setData(String data){
         DateTime dataNoticia = new DateTime(data, DateTimeZone.forOffsetHours(-3));
         DateTime hoje = DateTime.now();
+        hoje = hoje.minusHours(hoje.hourOfDay().get());
+        hoje = hoje.minusMinutes(hoje.minuteOfHour().get());
         DateTime ontem = hoje.minusDays(1);
         DateTime doisDiasAtras = hoje.minusDays(2);
         DateTime tresDiasAtras = hoje.minusDays(3);
+        Period horasDia = new Period().minusHours(24);
+        String dia;
+
         if(dataNoticia.isBefore(tresDiasAtras.toInstant())){
-            txvData.setText(dataNoticia.getDayOfMonth() + "/" + dataNoticia.getMonthOfYear() + "/" + dataNoticia.getYear());
+            dia = dataNoticia.getDayOfMonth() + "/" + dataNoticia.getMonthOfYear() + "/" + dataNoticia.getYear();
+
 
         } else if(dataNoticia.isBefore(doisDiasAtras.toInstant())){
-            txvData.setText("três dias atrás");
+            dia = "três dias atrás";
         } else if(dataNoticia.isBefore(ontem.toInstant())){
-            txvData.setText("dois dias atrás");
-        } else if(dataNoticia.isBefore(hoje.toInstant())){
-            txvData.setText("ontem");
+            dia = "dois dias atrás";
+        } else if(dataNoticia.isBefore(hoje)){
+            dia = "ontem";
         } else {
-            txvData.setText("hoje");
+            dia = "hoje";
         }
+
+        if(inflated){
+            txvData.setText(dia);
+        }
+        this.data = dia;
     }
 }
