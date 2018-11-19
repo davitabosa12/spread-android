@@ -1,7 +1,9 @@
 package smd.ufc.br.spread;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -16,13 +18,14 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class LaboratorioReservaActivity extends AppCompatActivity implements View.OnClickListener {
+public class LaboratorioReservaActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener, TimePickerDialog.OnTimeSetListener {
 
     String laboratorio;
     TextInputLayout tilTitulo, tilDescricao;
     EditText edtHorarioInicio, edtHorarioFim;
     Button btnReservar;
     TimePickerFragment timePicker;
+    int idEdtSelecionado;
     int hora, minuto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,10 @@ public class LaboratorioReservaActivity extends AppCompatActivity implements Vie
 
         edtHorarioFim = findViewById(R.id.edt_horario_fim);
         edtHorarioInicio = findViewById(R.id.edt_horario_inicio);
+        edtHorarioFim.setOnFocusChangeListener(this);
+        edtHorarioFim.setOnClickListener(this);
+        edtHorarioInicio.setOnFocusChangeListener(this);
+        edtHorarioInicio.setOnClickListener(this);
 
         btnReservar = findViewById(R.id.btn_reservar);
         btnReservar.setOnClickListener(this);
@@ -44,8 +51,19 @@ public class LaboratorioReservaActivity extends AppCompatActivity implements Vie
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if(id == R.id.btn_reservar){
-            realizarReserva();
+
+        switch (id){
+            case R.id.btn_reservar:
+                realizarReserva();
+                break;
+            case R.id.edt_horario_inicio:
+                idEdtSelecionado = id;
+                showPickerDialog(view);
+                break;
+            case R.id.edt_horario_fim:
+                idEdtSelecionado = id;
+                showPickerDialog(view);
+                break;
         }
     }
 
@@ -79,8 +97,62 @@ public class LaboratorioReservaActivity extends AppCompatActivity implements Vie
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    public static class TimePickerFragment extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        int id = view.getId();
+        if(b){
+            switch (id){
+                case R.id.edt_horario_inicio:
+                    idEdtSelecionado = id;
+                    showPickerDialog(view);
+                    break;
+                case R.id.edt_horario_fim:
+                    idEdtSelecionado = id;
+                    showPickerDialog(view);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        String hora = "", minuto = "";
+        if(i < 10){
+            hora = "0";
+        }
+        if( i1 < 10){
+            minuto = "0";
+        }
+        hora = hora + i + "";
+        minuto = minuto + i1 + "";
+        switch (idEdtSelecionado){
+            case R.id.edt_horario_inicio:
+                edtHorarioInicio.setText(hora + ":" + minuto);
+                break;
+            case R.id.edt_horario_fim:
+                edtHorarioFim.setText(hora + ":" + minuto);
+                break;
+        }
+    }
+
+    public static class TimePickerFragment extends DialogFragment {
+
+        Activity mActivity;
+        TimePickerDialog.OnTimeSetListener mListener;
+
+        @Override
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            if(context instanceof Activity){
+                mActivity = getActivity();
+                if(mActivity instanceof TimePickerDialog.OnTimeSetListener)
+                    mListener = (TimePickerDialog.OnTimeSetListener) mActivity;
+                else
+                    throw new ClassCastException("You must implement OnTimeSetListener!");
+            } else{
+                throw new ClassCastException("Dialog context must be an activity");
+            }
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -90,15 +162,8 @@ public class LaboratorioReservaActivity extends AppCompatActivity implements Vie
             int minute = c.get(Calendar.MINUTE);
 
             // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
+            return new TimePickerDialog(getActivity(), mListener, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
-        }
-
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            // Do something with the time chosen by the user
-            Toast.makeText(getActivity(), hourOfDay + ":" + minute, Toast.LENGTH_SHORT).show();
-
-
         }
     }
 

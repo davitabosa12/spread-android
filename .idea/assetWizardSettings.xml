@@ -28,9 +28,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="e1506d" />
-                            <entry key="outputName" value="ic_noticias_pink" />
-                            <entry key="sourceFile" value="C:\Users\Davi" />
+                            <entry key="outputName" value="ic_ondas_nav" />
+                            <entry key="sourceFile" value="G:\Spread\Icones e imagens em SVG\Group 2.svg" />
                           </map>
                         </option>
                       </PersistentState>

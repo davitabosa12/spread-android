@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ import smd.ufc.br.spread.fragments.NotificacoesFragment;
 import smd.ufc.br.spread.fragments.RequisicoesFragment;
 import smd.ufc.br.spread.model.Topico;
 import smd.ufc.br.spread.utils.TokenUtil;
+import smd.ufc.br.spread.utils.TopicoGetterTask;
 import smd.ufc.br.spread.utils.TopicoPreferences;
 import smd.ufc.br.spread.workers.TopicosGetterTask;
 
@@ -69,15 +71,6 @@ public class MainActivity extends AppCompatActivity
 
         }
         dataSync(); //todo: colocar em userHasLogin();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -173,6 +166,10 @@ public class MainActivity extends AppCompatActivity
         //FirebaseMessaging.getInstance().unsubscribeFromTopic(topico);
     }
 
+    private void atualizarTopicos() {
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -253,6 +250,7 @@ public class MainActivity extends AppCompatActivity
                 set.add(t.getNome());
             }
             prefs.setTopicosDisponiveis(set);
+            ouvirTopicos();
         }
 
     }
