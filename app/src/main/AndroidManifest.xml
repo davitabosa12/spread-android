@@ -52,7 +52,22 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity android:name=".EscolherLaboratorioReservaActivity" />
-        <activity android:name=".LaboratorioReservaActivity"></activity>
+        <activity android:name=".LaboratorioReservaActivity" />
+        <activity android:name=".AlunoProfessorLogin" />
+        <activity android:name=".LoginAlunoActivity" />
+        <activity android:name=".LoginProfessorActivity" />
+        <activity android:name=".AnonymousActivity" />
+        <activity
+            android:name=".SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

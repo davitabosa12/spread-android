@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_login"
+            android:icon="@drawable/ic_round_flare_24px"
+            android:title="Login/Cadastro" />
+        <item
+            android:id="@+id/nav_check_in_professor"
+            android:icon="@drawable/ic_check_in_pink"
+            android:title="Check-in Professor" />
+        <item
+            android:id="@+id/nav_laboratorio"
+            android:icon="@drawable/ic_round_ballot_24px"
+            android:title="Aulas, Salas e Laboratórios"
+            />
+        <item
+            android:id="@+id/nav_noticias"
+            android:icon="@drawable/ic_noticias_pink"
+            android:title="Notícias"
+            />
+    </group>
+</menu>

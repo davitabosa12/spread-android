@@ -1,13 +1,6 @@
-<!DOCTYPE svg [<!ELEMENT svg (rect|mask|g|path|defs)*><!ATTLIST svgwidth CDATA #REQUIREDheight CDATA #REQUIREDviewBox CDATA #REQUIREDfill CDATA #REQUIREDxmlns CDATA #REQUIREDxmlns:xlink CDATA #REQUIRED><!ELEMENT rect (#PCDATA)><!ATTLIST rectfill CDATA #REQUIREDfill-opacity CDATA #IMPLIEDheight CDATA #REQUIREDwidth CDATA #REQUIREDx CDATA #IMPLIEDy CDATA #REQUIRED><!ELEMENT mask (rect)*><!ATTLIST maskid CDATA #REQUIREDmask-type CDATA #REQUIREDmaskUnits CDATA #REQUIREDx CDATA #REQUIREDy CDATA #REQUIREDwidth CDATA #REQUIREDheight CDATA #REQUIRED><!ELEMENT g (rect)*><!ATTLIST gmask CDATA #REQUIRED><!ELEMENT path (#PCDATA)><!ATTLIST pathd CDATA #REQUIREDfill CDATA #REQUIRED><!ELEMENT defs (pattern|image)*><!ELEMENT pattern (use)*><!ATTLIST patternid CDATA #REQUIREDpatternContentUnits CDATA #REQUIREDwidth CDATA #REQUIREDheight CDATA #REQUIRED><!ELEMENT use (#PCDATA)><!ATTLIST usexlink:href CDATA #REQUIREDtransform CDATA #REQUIRED><!ELEMENT image (#PCDATA)><!ATTLIST imageid CDATA #REQUIREDwidth CDATA #REQUIREDheight CDATA #REQUIREDxlink:href CDATA #REQUIRED>]>
-<svg width="360" height="220" viewBox="0 0 360 220" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect y="-39" width="372" height="259" fill="#EB5270"/>
-<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="-39" width="372" height="259">
-<rect y="-39" width="372" height="259" fill="#EB5270"/>
-</mask>
-<g mask="url(#mask0)">
-<rect x="-273" y="63" width="1107" height="328" fill="url(#pattern0)" fill-opacity="0.1"/>
-</g>
-<path d="M360 114.928C360 114.928 282 24.2971 170 91.3638C58 158.43 2.42667e-05 67.7998 2.42667e-05 67.7998L0 -234L360 -234L360 114.928Z" fill="#FF8B5C"/>
+<svg width="360" height="328" viewBox="0 0 360 328" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<path d="M360 282.063C360 282.063 279.183 208.8 163.139 263.014C47.0945 317.229 -13 243.966 -13 243.966L-13 3.26087e-05L360 0L360 282.063Z" fill="#EB5270"/>
+<rect x="-322" y="3.05176e-05" width="1107" height="328" fill="url(#pattern0)" fill-opacity="0.1"/>
 <defs>
 <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
 <use xlink:href="#image0" transform="translate(0 -0.00625) scale(0.000666667 0.00225)"/>

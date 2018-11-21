@@ -58,6 +58,11 @@ public class TokenUtil {
         String token = sharedPref.getString("fcmToken", null);
         return token;
     }
+    public String getUserType(){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        String token = sharedPref.getString("userType", null);
+        return token;
+    }
 
     public void setMatricula(String matricula){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
@@ -110,4 +115,10 @@ public class TokenUtil {
         editor.apply();
     }
 
+    public void setUserType(String tipo) {
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("userType", tipo);
+        editor.apply();
+    }
 }
