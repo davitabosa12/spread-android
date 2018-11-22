@@ -23,13 +23,20 @@ public class TopicoPreferences {
         editor = sharedPref.edit();
     }
 
-    public void setTopicosDisponiveis(HashSet<String> topicos){
+    public void setTopicosDisponiveis(Set<String> topicos){
 
         editor.putStringSet("topicos_disponiveis", topicos);
         editor.commit();
+
+        //atualizar topicos de interesse, para nao dar conflito
+        Set<String> interesse = getTopicosInteresse();
+        if(interesse == null) return;
+
+        interesse.retainAll(topicos);
+        setTopicoInteresse(interesse);
     }
 
-    public void setTopicoInteresse(HashSet<String> topicos){
+    public void setTopicoInteresse(Set<String> topicos){
         editor.putStringSet("topicos_interesse", topicos);
         editor.commit();
     }
@@ -39,5 +46,26 @@ public class TopicoPreferences {
     }
     public Set<String> getTopicosInteresse(){
         return sharedPref.getStringSet("topicos_interesse", null);
+    }
+
+    public void inscreverNoTopico(String topico){
+        Set<String> interesse = sharedPref.getStringSet("topicos_interesse", null);
+        if(interesse == null)
+            interesse = new HashSet<>();
+
+        if(interesse.contains(topico))
+            return;
+        else interesse.add(topico);
+        setTopicoInteresse(interesse);
+    }
+
+    public void desinscreverNoTopico(String topico){
+        Set<String> interesse = sharedPref.getStringSet("topicos_interesse", null);
+        if(interesse == null) return;
+
+        if(interesse.contains(topico))
+            interesse.remove(topico);
+        else return;
+        setTopicoInteresse(interesse);
     }
 }

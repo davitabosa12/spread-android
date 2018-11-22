@@ -10,13 +10,20 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import smd.ufc.br.spread.model.Topico;
 import smd.ufc.br.spread.utils.TokenUtil;
+import smd.ufc.br.spread.utils.TopicoGetterTask;
+import smd.ufc.br.spread.utils.TopicoPreferences;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements ResponseListener<List<Topico>> {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -41,10 +48,12 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void run() {
             Log.d(TAG, "run: started running..");
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
             if(userHasLogin())//if user has login...
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                i.putExtra("hasLogin", true);
             else
-                startActivity(new Intent(getApplicationContext(), AnonymousActivity.class));
+                i.putExtra("hasLogin", false);
+            startActivity(i);
         }
     };
 
@@ -129,6 +138,8 @@ public class SplashActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+        TopicoGetterTask mTask = new TopicoGetterTask(this, this);
     }
 
     @Override
@@ -182,5 +193,15 @@ public class SplashActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    public void doThis(List<Topico> response) {
+        TopicoPreferences preferences = new TopicoPreferences(this);
+        Set<String> t = new HashSet<>();
+        for(Topico topico : response){
+            t.add(topico.getNome());
+        }
+        preferences.setTopicosDisponiveis(t);
     }
 }

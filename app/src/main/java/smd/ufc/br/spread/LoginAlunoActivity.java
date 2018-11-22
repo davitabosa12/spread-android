@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -58,8 +59,12 @@ public class LoginAlunoActivity extends AppCompatActivity implements View.OnClic
         btnCadastro = findViewById(R.id.btn_cadastro);
         btnEsqueciSenha = findViewById(R.id.btn_esqueci_senha);
 
-        edtEmail = findViewById(R.id.edt_email);
-        edtSenha = findViewById(R.id.edt_senha);
+        TextInputLayout tilEmail, tilSenha;
+
+        tilEmail = findViewById(R.id.edt_email);
+        tilSenha = findViewById(R.id.edt_senha);
+        edtEmail = tilEmail.getEditText();
+        edtSenha = tilSenha.getEditText();
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -116,7 +121,7 @@ public class LoginAlunoActivity extends AppCompatActivity implements View.OnClic
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(password)) {
             edtSenha.setError(getString(R.string.error_invalid_password));
             focusView = edtSenha;
             cancel = true;
@@ -230,17 +235,13 @@ public class LoginAlunoActivity extends AppCompatActivity implements View.OnClic
                     String matricula = response.getString("matricula");
                     String email = response.getString("email");
                     String userType = response.getString("userType");
-                    JSONArray topicosInscritos = response.getJSONArray("topicosInscritos");
-                    HashSet<String> topicos = new HashSet<>();
-                    for(int j = 0; j < topicosInscritos.length(); j++ ){
-                        topicos.add(topicosInscritos.getString(j));
-                    }
-                    prefs.setTopicoInteresse(topicos);
+
 
                     Log.d(TAG, "doInBackground received: " + " " + name + " "
-                            + matricula + " " + email + " " + userType + " " + topicosInscritos.toString());
-                    new TopicRefresher(getApplicationContext()).refresh();
+                            + matricula + " " + email + " " + userType + " ");
 
+
+                    util.clear();
                     util.setAuthToken(token);
                     util.setLogin(mLogin);
                     util.setPassword(mPassword);

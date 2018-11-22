@@ -121,4 +121,17 @@ public class TokenUtil {
         editor.putString("userType", tipo);
         editor.apply();
     }
+
+    public void clear(){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        if(sharedPref == null) return;
+        sharedPref.edit()
+                .remove("userType")
+                .remove("name")
+                .remove("password")
+                .remove("login")
+                .remove("authToken")
+        .apply();
+
+    }
 }

@@ -13,7 +13,7 @@ public class AlunoProfessorLogin extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_aluno);
+        setContentView(R.layout.activity_aluno_professor_login);
 
         Button btnProfessor, btnAluno;
         btnAluno = findViewById(R.id.btn_aluno);
@@ -45,11 +45,9 @@ public class AlunoProfessorLogin extends AppCompatActivity implements View.OnCli
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
-            startActivity(new Intent(this, MainActivity.class));
+            setResult(resultCode);
+            //startActivity(new Intent(this, MainActivity.class));
             finish();
-        } else {
-            startActivity(new Intent(this, AnonymousActivity.class));
-        }
+
     }
 }
