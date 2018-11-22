@@ -233,19 +233,19 @@ public class LoginProfessorActivity extends AppCompatActivity implements View.On
                     String token = response.getString("token");
                     //String login = response.getString("login");
                     String name = response.getString("nome");
-                    String matricula = response.getString("siape");
+                    //String matricula = response.getString("siape");
                     String email = response.getString("email");
 
 
                     Log.d(TAG, "doInBackground received: " + " " + name + " "
-                            + matricula + " " + email);
+                            + " " + email);
 
 
                     util.clear();
                     util.setAuthToken(token);
                     util.setLogin(mLogin);
                     util.setPassword(mPassword);
-                    util.setMatricula(matricula);
+
                     util.setUserType("professor");
                     util.setName(name);
 

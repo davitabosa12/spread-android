@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -46,12 +47,13 @@ import smd.ufc.br.spread.fragments.NoticiasFragment;
 import smd.ufc.br.spread.fragments.NotificacoesFragment;
 import smd.ufc.br.spread.fragments.RequisicoesFragment;
 import smd.ufc.br.spread.model.Topico;
+import smd.ufc.br.spread.utils.ProfessorPreferences;
 import smd.ufc.br.spread.utils.TokenUtil;
 import smd.ufc.br.spread.utils.TopicoPreferences;
 import smd.ufc.br.spread.workers.TopicosGetterTask;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ResponseListener<List<Topico>> {
+        implements NavigationView.OnNavigationItemSelectedListener, ResponseListener<List<Topico>>, NotificacoesFragment.OnFragmentDismissListener {
     private static final String TAG = "MainActivity";
     NavigationView navigationView;
     private static final int LOGIN_REQUEST_CODE = 401;
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity
     /*******************************************************************/
     private void changeUILogin() {
 
+
         View headerView = navigationView.getHeaderView(0);
         updateCredentials();
         TextView userName = headerView.findViewById(R.id.user_name);
@@ -127,6 +130,20 @@ public class MainActivity extends AppCompatActivity
 
         userName.setText(tokenUtil.getName());
         userEmail.setText(tokenUtil.getLogin());
+
+        String mUserType = tokenUtil.getUserType();
+
+        //checar se é professor
+        if(mUserType != null && mUserType.equals("professor")){
+            //mostrar coisas do professor!
+            //tambem setar Awareness
+            ProfessorPreferences profprefs = new ProfessorPreferences(this);
+            if(profprefs.isAwarenessEnabled()){
+                activateAwareness();
+            } else {
+                deactivateAwareness();
+            }
+        }
 
 
         Menu menu = navigationView.getMenu();
@@ -193,10 +210,11 @@ public class MainActivity extends AppCompatActivity
         TopicoPreferences prefs = new TopicoPreferences(this);
         Set<String> disp = prefs.getTopicosDisponiveis();
         Set<String> interesse = prefs.getTopicosInteresse();
-        Set<String> semInteresse = new HashSet<>(disp);
+
         if (disp == null) {
             return;
         }
+        Set<String> semInteresse = new HashSet<>(disp);
         if (interesse == null)
             interesse = new HashSet<>(disp);
         else
@@ -339,6 +357,10 @@ public class MainActivity extends AppCompatActivity
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions, 321654);
+            }
             return;
         }
         AwarenessFence noBloco = LocationFence.in(latitudeSMD, longitudeSMD, raio, tempo);
@@ -355,7 +377,17 @@ public class MainActivity extends AppCompatActivity
         client.updateFences(new FenceUpdateRequest.Builder()
                 .addFence("noBloco", noBloco,noBlocoPi)
                 .addFence("saindoDoBloco", saindoDoBloco, saindoDoBlocoPi)
-                .build());
+                .build())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onComplete: Fences registradas com sucesso!");
+                        } else {
+                            Log.e(TAG, "onComplete: Nao foi possivel registrar fence", new Exception("oooo"));
+                        }
+                    }
+                });
     }
 
     public void deactivateAwareness() {
@@ -363,6 +395,27 @@ public class MainActivity extends AppCompatActivity
         client.updateFences(new FenceUpdateRequest.Builder()
                 .removeFence("noBloco")
                 .removeFence("saindoDoBloco")
-                .build());
+                .build())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onComplete: Fences removidas!");
+                        } else {
+                            Log.e(TAG, "onComplete: Nao foi possivel remover fence", new Exception("deu bode"));
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void fragmentDismissed(String fragmentName) {
+        if(fragmentName.equals(NotificacoesFragment.TAG)){
+            ProfessorPreferences professorPreferences = new ProfessorPreferences(this);
+            if(professorPreferences.isAwarenessEnabled())
+                activateAwareness();
+            else
+                deactivateAwareness();
+        }
     }
 }
