@@ -245,7 +245,7 @@ public class LoginProfessorActivity extends AppCompatActivity implements View.On
                     util.setAuthToken(token);
                     util.setLogin(mLogin);
                     util.setPassword(mPassword);
-
+                    util.setMatricula(matricula);
                     util.setUserType("professor");
                     util.setName(name);
 

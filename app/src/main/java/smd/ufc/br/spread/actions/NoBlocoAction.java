@@ -87,7 +87,7 @@ public class NoBlocoAction extends BroadcastReceiver implements ResponseListener
             if(siape == null){
                 return null;
             }
-            String url = mContext.getString(R.string.server_url) + "/api/" + siape + "/checkin";
+            String url = mContext.getString(R.string.server_url) + "/api/professor/" + siape + "/checkin";
             NetworkConnect connect = new NetworkConnect(mContext, Request.Method.POST, url, null);
             Future<JSONObject> future = connect.connect();
             try {

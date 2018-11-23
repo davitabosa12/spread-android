@@ -91,7 +91,7 @@ public class SaindoDoBlocoAction extends BroadcastReceiver implements ResponseLi
             if(siape == null){
                 return null;
             }
-            String url = mContext.getString(R.string.server_url) + "/api/" + siape + "/checkout";
+            String url = mContext.getString(R.string.server_url) + "/api/professor/" + siape + "/checkout";
             NetworkConnect connect = new NetworkConnect(mContext, Request.Method.POST, url, null);
             Future<JSONObject> future = connect.connect();
             try {

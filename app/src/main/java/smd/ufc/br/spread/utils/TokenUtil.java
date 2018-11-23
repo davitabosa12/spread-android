@@ -131,6 +131,7 @@ public class TokenUtil {
                 .remove("password")
                 .remove("login")
                 .remove("authToken")
+                .remove("matricula")
         .apply();
 
     }
