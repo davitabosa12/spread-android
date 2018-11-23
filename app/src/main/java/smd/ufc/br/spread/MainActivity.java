@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -53,21 +54,29 @@ import smd.ufc.br.spread.utils.TopicoPreferences;
 import smd.ufc.br.spread.workers.TopicosGetterTask;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ResponseListener<List<Topico>>, NotificacoesFragment.OnFragmentDismissListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ResponseListener<List<Topico>>, NotificacoesFragment.OnFragmentDismissListener, MenuItem.OnMenuItemClickListener {
     private static final String TAG = "MainActivity";
     NavigationView navigationView;
     private static final int LOGIN_REQUEST_CODE = 401;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_main2);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Menu toolbarMenu = toolbar.getMenu();
+
+
 
         if (userHasLogin()) {
             changeUILogin();
@@ -128,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         TokenUtil tokenUtil = new TokenUtil(getApplicationContext());
 
 
+
         userName.setText(tokenUtil.getName());
         userEmail.setText(tokenUtil.getLogin());
 
@@ -147,6 +157,8 @@ public class MainActivity extends AppCompatActivity
 
 
         Menu menu = navigationView.getMenu();
+
+
         MenuItem notificacoes, requisicoes, alteracoes, loginMenu;
         notificacoes = menu.findItem(R.id.nav_notificacoes);
         requisicoes = menu.findItem(R.id.nav_requisicoes);
@@ -258,7 +270,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
-
+        MenuItem logout = menu.findItem(R.id.menu_logout);
+        logout.setVisible(userHasLogin());
         return true;
     }
 
@@ -269,6 +282,15 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id){
+            case R.id.menu_logout:
+                Log.d(TAG, "onOptionsItemSelected: performLogout");
+                performLogout();
+                break;
+            default:
+                Log.d(TAG, "onOptionsItemSelected: " + item.getTitle() + " pressionado!");
+                break;
+        }
 
         //noinspection SimplifiableIfStatement
         /*if (id == R.id.action_settings) {
@@ -366,6 +388,7 @@ public class MainActivity extends AppCompatActivity
         AwarenessFence noBloco = LocationFence.in(latitudeSMD, longitudeSMD, raio, tempo);
         AwarenessFence saindoDoBloco = LocationFence.exiting(latitudeSMD,longitudeSMD, raio);
 
+
         PendingIntent saindoDoBlocoPi = PendingIntent.getBroadcast(this, 0,
                 new Intent(this, SaindoDoBlocoAction.class), 0);
 
@@ -417,5 +440,28 @@ public class MainActivity extends AppCompatActivity
             else
                 deactivateAwareness();
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        if(menuItem.getItemId() == R.id.menu_logout){
+            Log.d(TAG, "onMenuItemClick: performing logout...");
+            performLogout();
+        }
+        return true;
+    }
+
+    private void performLogout() {
+        Log.d(TAG, "performLogout: clearing tokens..");
+        TokenUtil util = new TokenUtil(this);
+        util.clear();
+
+        Log.d(TAG, "performLogout: disabling awareness...");
+        ProfessorPreferences preferences = new ProfessorPreferences(this);
+        preferences.setAwarenessEnabled(false);
+        Log.d(TAG, "performLogout: logged out, going back to SplashActivity!");
+        startActivity(new Intent(this, SplashActivity.class));
+        Log.d(TAG, "performLogout: finishing MainActivity");
+        finish();
     }
 }

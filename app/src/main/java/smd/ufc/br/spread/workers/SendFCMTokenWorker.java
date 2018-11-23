@@ -27,13 +27,23 @@ public class SendFCMTokenWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        TokenUtil util = new TokenUtil(getApplicationContext());
         Log.d(TAG, "doWork: Started Working");
         Context context = getApplicationContext();
-        String auth_token = new TokenUtil(context).getAuthToken();
-        String fcm_token = new TokenUtil(context).getFCMToken();
+        String auth_token = util.getAuthToken();
+        String fcm_token = util.getFCMToken();
         Log.d(TAG, "doWork: fcm_token is " + fcm_token);
-        String matricula = new TokenUtil(context).getMatricula();
-        String url = context.getResources().getString(R.string.server_url) + "/api/aluno/"+ matricula + "/tokenUpdate";
+        String matricula = util.getMatricula();
+        String userType = util.getUserType();
+
+        if(matricula ==null || fcm_token == null || auth_token == null){
+            Log.e(TAG, "doWork: data is null!", new NullPointerException("ooh boy!"));
+            return Result.RETRY;
+        }
+
+
+        String url = (userType.equals("aluno")) ? context.getResources().getString(R.string.server_url) + "/api/aluno/"+ matricula + "/tokenUpdate"
+                : context.getResources().getString(R.string.server_url) + "/api/professor/"+ matricula + "/tokenUpdate";
         JSONObject response = null;
         JSONObject params = new JSONObject();
         try{

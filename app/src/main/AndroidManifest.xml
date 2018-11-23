@@ -49,8 +49,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
+        <receiver android:name=".actions.NoBlocoAction" ></receiver>
+        <receiver android:name=".actions.SaindoDoBlocoAction"></receiver>
 
         <service
             android:name=".services.SpreadFirebaseMessagingService"

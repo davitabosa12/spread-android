@@ -54,6 +54,7 @@ public class SplashActivity extends AppCompatActivity implements ResponseListene
             else
                 i.putExtra("hasLogin", false);
             startActivity(i);
+            finish();
         }
     };
 
