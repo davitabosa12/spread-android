@@ -2,6 +2,7 @@ package smd.ufc.br.spread;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.TextInputLayout;
@@ -86,6 +87,8 @@ public class LoginAlunoActivity extends AppCompatActivity implements View.OnClic
                 pegarDadosETentarLogin();
                 break;
             case R.id.btn_cadastro:
+                Intent i = new Intent(this, VerificarDadosAlunoActivity.class);
+                startActivity(i);
                 break;
             case R.id.btn_esqueci_senha:
                 break;

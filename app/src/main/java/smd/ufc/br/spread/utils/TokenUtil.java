@@ -64,12 +64,18 @@ public class TokenUtil {
         return token;
     }
 
+    public String getTopico() {
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        String token = sharedPref.getString("topicoProf", null);
+        return token;
+    }
     public void setMatricula(String matricula){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("matricula", matricula);
         editor.apply();
     }
+
     public void setFCMToken(String fcmToken){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -88,7 +94,6 @@ public class TokenUtil {
                 .build();
         WorkManager.getInstance().enqueue(workRequest);
     }
-
     public void setAuthToken(String authToken){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -101,6 +106,7 @@ public class TokenUtil {
         editor.putString("login", login);
         editor.apply();
     }
+
     public void setPassword(String password){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -122,6 +128,13 @@ public class TokenUtil {
         editor.apply();
     }
 
+    public void setTopico(String topico){
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("topicoProf", topico);
+        editor.apply();
+    }
+
     public void clear(){
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
         if(sharedPref == null) return;
@@ -132,7 +145,7 @@ public class TokenUtil {
                 .remove("login")
                 .remove("authToken")
                 .remove("matricula")
+                .remove("topicoProf")
         .apply();
-
     }
 }

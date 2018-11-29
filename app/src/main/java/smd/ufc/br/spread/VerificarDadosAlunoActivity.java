@@ -1,5 +1,7 @@
 package smd.ufc.br.spread;
 
+import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,8 +30,8 @@ public class VerificarDadosAlunoActivity extends AppCompatActivity implements Vi
 
 
         btnContinuar = findViewById(R.id.btn_continuar);
-        edtMatricula = findViewById(R.id.edt_siape);
-        edtCpf = findViewById(R.id.edt_cpf);
+        edtMatricula = ((TextInputLayout) findViewById(R.id.edt_siape) ).getEditText();
+        edtCpf = ((TextInputLayout)findViewById(R.id.edt_cpf)).getEditText();
         loader = findViewById(R.id.progressBar);
 
         btnContinuar.setOnClickListener(this);
@@ -93,7 +95,8 @@ public class VerificarDadosAlunoActivity extends AppCompatActivity implements Vi
     @Override
     public void doThis(JSONObject response) {
         if(response == null){
-            //falhou
+            Toast.makeText(this, "Matricula não cadastrada no sistema", Toast.LENGTH_SHORT).show();
+            visibilidadeLoader(false);
         } else {
             String serverMatricula = null;
             String serverCPF = null;
@@ -111,6 +114,11 @@ public class VerificarDadosAlunoActivity extends AppCompatActivity implements Vi
             if(matricula.equals(serverMatricula) && cpf.equals(serverCPF)){
                 //os dados conferem
                 //TODO: Ir para activity de cadastro
+                Intent i = new Intent(this, AlterarDadosCadastroActivity.class);
+                i.putExtra("userType", "aluno");
+                i.putExtra("matricula", matricula);
+                startActivity(i);
+                finish();
 
             } else {
                 //os dados informados nao conferem
