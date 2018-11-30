@@ -1,11 +1,14 @@
 package smd.ufc.br.spread.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -61,7 +64,6 @@ public class NoticiaView extends ConstraintLayout {
     }
 
 
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -79,6 +81,8 @@ public class NoticiaView extends ConstraintLayout {
         txvTitulo.setText(titulo);
         txvCorpo.setText(corpo);
         txvData.setText(data);
+
+        txvTopico.setLetterSpacing(0.08f);
 
         inflated = true;
         Log.d(TAG, "onFinishInflate: inflado com " + txvTopico.getText() + ", " +
@@ -99,15 +103,15 @@ public class NoticiaView extends ConstraintLayout {
     }
     public void setCorpo(String corpo){
         String limit = corpo;
-        //limita o texto mostrado em 30 caracteres
-        if (corpo.length() > 30) {
-            limit = limit.substring(0,26);
+        //limita o texto mostrado em 60 caracteres
+        if (corpo.length() > 60) {
+            limit = limit.substring(0,56);
             limit += "...";
         }
 
         if(inflated)
             txvCorpo.setText(limit);
-        this.corpo = limit;
+        this.corpo = corpo;
     }
     public void setData(String data){
         DateTime dataNoticia = new DateTime(data, DateTimeZone.forOffsetHours(-3));
@@ -139,4 +143,5 @@ public class NoticiaView extends ConstraintLayout {
         }
         this.data = dia;
     }
+
 }

@@ -81,7 +81,7 @@ public class SplashActivity extends AppCompatActivity implements ResponseListene
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
-    private View mControlsView;
+
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -90,7 +90,7 @@ public class SplashActivity extends AppCompatActivity implements ResponseListene
             if (actionBar != null) {
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+
         }
     };
     private boolean mVisible;
@@ -122,7 +122,7 @@ public class SplashActivity extends AppCompatActivity implements ResponseListene
         setContentView(R.layout.activity_splash);
 
         mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
+
         mContentView = findViewById(R.id.fullscreen_content);
         mChangeActivityHandler.postDelayed(mStartActivityRunnable, 3000);
 
@@ -138,7 +138,7 @@ public class SplashActivity extends AppCompatActivity implements ResponseListene
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
 
         TopicoGetterTask mTask = new TopicoGetterTask(this, this);
     }
@@ -167,7 +167,7 @@ public class SplashActivity extends AppCompatActivity implements ResponseListene
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay

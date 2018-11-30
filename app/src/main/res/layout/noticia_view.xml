@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-
+    android:id="@+id/cdv_root"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="5dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="140dp"
         android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground">
+        android:background="@drawable/ripple_effect"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
         <TextView
             android:id="@+id/txv_topico"
             android:layout_width="wrap_content"
             android:layout_height="19dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="14dp"
             android:text="%topico%"
+            android:textAllCaps="true"
+            android:textColor="@color/custom_text_color"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +33,7 @@
         <TextView
             android:id="@+id/txv_titulo"
             android:layout_width="wrap_content"
-            android:layout_height="19dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="%TITULO%"
             android:textSize="18sp"
@@ -40,7 +46,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:text="%corpo%"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="@+id/txv_titulo"
             app:layout_constraintTop_toBottomOf="@+id/txv_titulo" />
 
@@ -65,4 +73,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
-</merge>
+</android.support.v7.widget.CardView>
